@@ -92,6 +92,8 @@ public class RichEditorView extends RelativeLayout implements TextWatcher, Query
 
     private boolean mWaitingForFirstResult = false;
 
+    private boolean mIsDisplayTextCounter = true;
+
     // --------------------------------------------------
     // Constructors & Initialization
     // --------------------------------------------------
@@ -255,7 +257,8 @@ public class RichEditorView extends RelativeLayout implements TextWatcher, Query
      * @param display true to display the text counter view
      */
     public void displayTextCounter(boolean display) {
-        if (display) {
+        mIsDisplayTextCounter = display;
+        if (mIsDisplayTextCounter) {
             mTextCounterView.setVisibility(TextView.VISIBLE);
         } else {
             mTextCounterView.setVisibility(TextView.GONE);
@@ -266,7 +269,7 @@ public class RichEditorView extends RelativeLayout implements TextWatcher, Query
      * @return true if the text counter view is currently visible to the user
      */
     public boolean isDisplayingTextCounter() {
-        return mTextCounterView != null && mTextCounterView.getVisibility() == TextView.VISIBLE;
+        return mIsDisplayTextCounter;
     }
 
     // --------------------------------------------------
@@ -356,9 +359,11 @@ public class RichEditorView extends RelativeLayout implements TextWatcher, Query
         }
 
         // Change view depending on whether suggestions are being shown or not
+
+        mTextCounterView.setVisibility(mIsDisplayTextCounter ? View.VISIBLE : View.GONE);
+
         if (display) {
             disableSpellingSuggestions(true);
-            mTextCounterView.setVisibility(View.GONE);
             mSuggestionsList.setVisibility(View.VISIBLE);
             mPrevEditTextParams = mMentionsEditText.getLayoutParams();
             mPrevEditTextBottomPadding = mMentionsEditText.getPaddingBottom();
@@ -378,7 +383,6 @@ public class RichEditorView extends RelativeLayout implements TextWatcher, Query
             }
         } else {
             disableSpellingSuggestions(false);
-            mTextCounterView.setVisibility(View.VISIBLE);
             mSuggestionsList.setVisibility(View.GONE);
             mMentionsEditText.setPadding(mMentionsEditText.getPaddingLeft(), mMentionsEditText.getPaddingTop(), mMentionsEditText.getPaddingRight(), mPrevEditTextBottomPadding);
             if (mPrevEditTextParams == null) {
