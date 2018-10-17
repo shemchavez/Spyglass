@@ -482,6 +482,14 @@ public class RichEditorView extends RelativeLayout implements TextWatcher, Query
         return mMentionsEditText.getCurrentKeywordsString();
     }
 
+    public List<String> getKeywords() {
+        List<String> keywords = new ArrayList<>();
+        for(MentionSpan mentionSpan: getMentionSpans()) {
+            keywords.add(mentionSpan.getDisplayString());
+        }
+        return keywords;
+    }
+
     /**
      * Resets the given {@link MentionSpan} in the editor, forcing it to redraw with its latest drawable state.
      *
