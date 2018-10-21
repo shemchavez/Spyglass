@@ -92,7 +92,11 @@ public class RichEditorView extends RelativeLayout implements TextWatcher, Query
 
     private boolean mWaitingForFirstResult = false;
 
+    private int mMentionsEditTextHeight = 0;
+    private int mSuggestionListHeight = 400;
+
     private boolean mIsDisplayTextCounter = true;
+    private boolean mIsSingleLine = false;
 
     // --------------------------------------------------
     // Constructors & Initialization
@@ -396,6 +400,8 @@ public class RichEditorView extends RelativeLayout implements TextWatcher, Query
             }
         }
 
+        setRichEditorViewHeight(display);
+
         requestLayout();
         invalidate();
     }
@@ -484,7 +490,7 @@ public class RichEditorView extends RelativeLayout implements TextWatcher, Query
 
     public List<String> getKeywords() {
         List<String> keywords = new ArrayList<>();
-        for(MentionSpan mentionSpan: getMentionSpans()) {
+        for (MentionSpan mentionSpan : getMentionSpans()) {
             keywords.add(mentionSpan.getDisplayString());
         }
         return keywords;
@@ -682,4 +688,21 @@ public class RichEditorView extends RelativeLayout implements TextWatcher, Query
         }
     }
 
+    public void setSingleLine(boolean isSingleLine) {
+        mMentionsEditTextHeight = getLayoutParams().height;
+        mIsSingleLine = true;
+        if (isSingleLine)
+            mMentionsEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+        else
+            mMentionsEditText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+    }
+
+    public void setRichEditorViewHeight(boolean isSuggestionListDisplayed) {
+        if (mIsSingleLine) {
+            if (isSuggestionListDisplayed)
+                getLayoutParams().height = mSuggestionListHeight;
+            else
+                getLayoutParams().height = mMentionsEditTextHeight;
+        }
+    }
 }
