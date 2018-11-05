@@ -76,7 +76,7 @@ public class RichEditorView extends RelativeLayout implements TextWatcher, Query
     private MentionsEditText mMentionsEditText;
     private int mOriginalInputType = InputType.TYPE_CLASS_TEXT; // Default to plain text
     private TextView mTextCounterView;
-    private ListView mSuggestionsList;
+    public ListView mSuggestionsList;
 
     private QueryTokenReceiver mHostQueryTokenReceiver;
     private SuggestionsAdapter mSuggestionsAdapter;
