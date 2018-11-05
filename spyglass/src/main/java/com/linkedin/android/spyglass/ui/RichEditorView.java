@@ -27,6 +27,7 @@ import android.text.Layout;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -71,12 +72,14 @@ import java.util.List;
  * @attr ref R.styleable#RichEditorView_selectedMentionTextColor
  * @attr ref R.styleable#RichEditorView_selectedMentionTextBackgroundColor
  */
-public class RichEditorView extends RelativeLayout implements TextWatcher, QueryTokenReceiver, SuggestionsResultListener, SuggestionsVisibilityManager {
+public class RichEditorView
+        extends RelativeLayout
+        implements ListView.OnTouchListener, TextWatcher, QueryTokenReceiver, SuggestionsResultListener, SuggestionsVisibilityManager {
 
     private MentionsEditText mMentionsEditText;
     private int mOriginalInputType = InputType.TYPE_CLASS_TEXT; // Default to plain text
     private TextView mTextCounterView;
-    public ListView mSuggestionsList;
+    private ListView mSuggestionsList;
 
     private QueryTokenReceiver mHostQueryTokenReceiver;
     private SuggestionsAdapter mSuggestionsAdapter;
@@ -126,6 +129,8 @@ public class RichEditorView extends RelativeLayout implements TextWatcher, Query
         mMentionsEditText = (MentionsEditText) findViewById(R.id.text_editor);
         mTextCounterView = (TextView) findViewById(R.id.text_counter);
         mSuggestionsList = (ListView) findViewById(R.id.suggestions_list);
+
+        mSuggestionsList.setOnTouchListener(this);
 
         // Get the MentionSpanConfig from custom XML attributes and set it
         MentionSpanConfig mentionSpanConfig = parseMentionSpanConfigFromAttributes(attrs, defStyleAttr);
@@ -704,5 +709,19 @@ public class RichEditorView extends RelativeLayout implements TextWatcher, Query
             else
                 getLayoutParams().height = mMentionsEditTextHeight;
         }
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                view.getParent().requestDisallowInterceptTouchEvent(true);
+                break;
+            case MotionEvent.ACTION_UP:
+                view.getParent().requestDisallowInterceptTouchEvent(false);
+                break;
+        }
+        view.onTouchEvent(motionEvent);
+        return true;
     }
 }
